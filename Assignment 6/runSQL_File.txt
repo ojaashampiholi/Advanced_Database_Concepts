@@ -1,0 +1,3 @@
+\o 'D:/MS DS/2020_Fall/Advanced Database Concepts/Assignments/Assignment 6/output.txt'
+
+\i 'D:/MS DS/2020_Fall/Advanced Database Concepts/Assignments/Assignment 6/assignment6.sql'

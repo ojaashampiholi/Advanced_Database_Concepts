@@ -1,0 +1,312 @@
+CREATE DATABASE
+                
+Question 1 - BiConnected Graph
+                
+DROP TABLE
+CREATE TABLE
+DROP TABLE
+CREATE TABLE
+DROP TABLE
+CREATE TABLE
+DROP TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+                
+Output for Test Data 1
+                
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+INSERT 0 6
+ biconnected 
+-------------
+ t
+(1 row)
+
+                
+Output for Test Data 2
+                
+DELETE 6
+DELETE 2
+DELETE 4
+DELETE 6
+INSERT 0 12
+ biconnected 
+-------------
+ f
+(1 row)
+
+DROP TABLE
+DROP FUNCTION
+                
+Question 2 - HITS Algorithm
+                
+DROP TABLE
+CREATE TABLE
+CREATE FUNCTION
+DELETE 0
+INSERT 0 5
+                
+Graph
+                
+ source | target 
+--------+--------
+      1 |      2
+      1 |      3
+      3 |      2
+      3 |      4
+      4 |      1
+(5 rows)
+
+                
+HITS Algorithm Output
+                
+ hitsalgorithm 
+---------------
+ 
+(1 row)
+
+ node | authscore | hubscore 
+------+-----------+----------
+    1 |         0 |    0.707
+    2 |     0.816 |        0
+    3 |     0.408 |    0.707
+    4 |     0.408 |        0
+(4 rows)
+
+                
+Question 3 - tFrequent Sets
+                
+DROP TABLE
+CREATE TABLE
+CREATE FUNCTION
+INSERT 0 8
+ doc |   words   
+-----+-----------
+ d7  | {C,B,A}
+ d1  | {A,B,C}
+ d8  | {B,A}
+ d4  | {B,B,A,D}
+ d2  | {B,C,D}
+ d6  | {A,D,G}
+ d3  | {A,E}
+ d5  | {E,F}
+(8 rows)
+
+                
+Output of frequentSets(1)
+                
+ frequentsets 
+--------------
+ {D}
+ {A,B,C}
+ {E}
+ {B,D}
+ {A,B,D}
+ {A,E}
+ {A,B}
+ {A,C}
+ {}
+ {B,C,D}
+ {B,C}
+ {A}
+ {C}
+ {A,D,G}
+ {E,F}
+ {B}
+ {A,G}
+ {C,D}
+ {F}
+ {D,G}
+ {G}
+ {A,D}
+(22 rows)
+
+                
+Output of frequentSets(2)
+                
+ frequentsets 
+--------------
+ {D}
+ {A,B,C}
+ {E}
+ {B,D}
+ {A,B}
+ {A,C}
+ {}
+ {B,C}
+ {A}
+ {C}
+ {B}
+ {A,D}
+(12 rows)
+
+                
+Output of frequentSets(3)
+                
+ frequentsets 
+--------------
+ {D}
+ {A,B}
+ {}
+ {B,C}
+ {A}
+ {C}
+ {B}
+(7 rows)
+
+                
+Output of frequentSets(4)
+                
+ frequentsets 
+--------------
+ {A,B}
+ {}
+ {A}
+ {B}
+(4 rows)
+
+                
+Output of frequentSets(5)
+                
+ frequentsets 
+--------------
+ {}
+ {A}
+ {B}
+(3 rows)
+
+DROP TABLE
+DROP FUNCTION
+                
+Question 4 - Djikstas Algorithm
+                
+DROP TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+DROP TABLE
+CREATE TABLE
+INSERT 0 14
+Result when input node = 0
+                
+ target | distance 
+--------+----------
+      0 |        0
+      1 |        2
+      2 |        9
+      3 |        5
+      4 |        9
+(5 rows)
+
+DROP TABLE
+CREATE TABLE
+INSERT 0 14
+Result when input node = 1
+                
+ target | distance 
+--------+----------
+      0 |        2
+      1 |        0
+      2 |        7
+      3 |        3
+      4 |        7
+(5 rows)
+
+                
+Question 5 - 3-Colourable Graph
+                
+CREATE FUNCTION
+CREATE FUNCTION
+                
+Test Data 1
+                
+DROP TABLE
+CREATE TABLE
+INSERT 0 8
+Graph
+                
+ source | target 
+--------+--------
+      1 |      2
+      2 |      3
+      3 |      4
+      4 |      1
+      2 |      1
+      3 |      2
+      4 |      3
+      1 |      4
+(8 rows)
+
+Result
+                
+ threecolorable 
+----------------
+ t
+(1 row)
+
+                
+Test Data 2
+                
+DROP TABLE
+CREATE TABLE
+INSERT 0 10
+Graph
+                
+ source | target 
+--------+--------
+      1 |      2
+      2 |      3
+      3 |      4
+      4 |      1
+      2 |      1
+      3 |      2
+      4 |      3
+      1 |      4
+      1 |      3
+      3 |      1
+(10 rows)
+
+Result
+                
+ threecolorable 
+----------------
+ t
+(1 row)
+
+                
+Test Data 3
+                
+DROP TABLE
+CREATE TABLE
+INSERT 0 12
+Graph
+                
+ source | target 
+--------+--------
+      1 |      2
+      2 |      3
+      3 |      4
+      4 |      1
+      2 |      1
+      3 |      2
+      4 |      3
+      1 |      4
+      1 |      3
+      3 |      1
+      2 |      4
+      4 |      2
+(12 rows)
+
+Result
+                
+ threecolorable 
+----------------
+ f
+(1 row)
+
+DROP DATABASE

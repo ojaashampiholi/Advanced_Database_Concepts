@@ -1,0 +1,675 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{enumitem}
+
+\begin{document}
+
+\centerline{\Large B561 Advanced Database Concepts}
+\medskip
+\centerline{\Large Assignment 3}
+
+\medskip
+\medskip
+
+This assignment is designed to test your knowledge of the following lectures:
+\begin{itemize}
+\item Lecture 6:  Aggregate functions and data partitioning
+\item Lecture 7:  Queries with quantifiers (Part 1)
+\item Lecture 8:  Queries with quantifiers (Part 2)
+\item Lecture 9:  Triggers
+\end{itemize}
+
+To turn in your assignment, you will need to upload to Canvas a single file with name {\tt assignment3.sql} which contains 
+the necessary SQL statements that solve the problems in this assignment.   
+The {\tt assignment3.sql} file must be such that the AI's can run it in their PostgreSQL environment.  
+In addition, you will need to upload a separate {\tt assignment3.txt} file that contains the results of running
+your queries.
+We have posted the exact requirements and an example for uploading your solution files.  (See the module
+{\tt Instructions for turning in assignments}.)
+
+For most of the problems in the assignment, we will use a database
+that maintains a set of persons {\tt Person}, a relation {\tt Knows}, a set of companies {\tt Company}, a relation {\tt WorksFor}, 
+a set of job skills ({\tt JobSkill}), and a relation {\tt PersonSkills}.   
+(The data for this database are given along with this assignment 
+in the {\tt data.sql} file.)
+The schemas for these sets and relations are as follows (primary keys are underlined):
+
+{\small
+\begin{center}
+{\tt
+  \begin{tabular}{l}
+  {Person}($\underline{\tt pid: integer}$, name:text, city: text, birthYear: integer)\\
+  {Knows}($\underline{\tt pid1:integer, pid2:integer}$) \\
+  {Company}($\underline{\tt cname:text,  city:text}$) \\
+  {WorksFor}($\underline{\tt pid: integer}$, cname:text, salary:integer) \\
+   {JobSkill}($\underline{\tt skill:text }$) \\
+  {PersonSkill}($\underline{\tt pid: text, skill:text}$),\\
+  \end{tabular}
+  }
+\end{center}
+}
+
+\begin{itemize}
+\item The {\tt city} and {\tt birthYear} in {\tt Person}
+specify the city in which the person lives and his or her birth year.
+
+\item The relation {\tt Knows} maintains a set of pairs $(p_1,p_2)$ where $p_1$ 
+and $p_2$ are pids of persons.   The pair $(p_1,p_2)$ indicates that the person with
+pid $p_1$ knows the person with pid $p_2$.
+We do not assume that the relation {\tt Knows} is
+symmetric: it is possible that $(p_1,p_2)$ is in the relation but that
+$(p_2,p_1)$ is not.
+
+\item The {\tt city} attribute in
+{\tt Company} indicates a city in which the company is located.
+(Companies may be located in multiple cities.)
+
+\item The relation {\tt WorksFor} stores the unique company (identified by {\tt cname}) for which a person
+works along with the salary he or she makes at that company.
+(Incidentally, it is possible that a person in the {\tt Person} relation does not
+work for any company.)
+
+\item The relation {\tt JobSkill} only has the attribute {\tt skill} which is the name of a possible
+job skill.    
+
+\item The relation {\tt PersonSkill} provides for each person his or her job skills.
+A person may have multiple job skills.   It is also possible that a person does not
+have any job skills.
+\end{itemize}
+
+We assume the following primary key and foreign key constraints:
+\begin{itemize}
+\item {\tt pid} is the primary key of {\tt Person}
+\item ({\tt pid1}, {\tt pid2}) is the primary key of {\tt Knows}
+\item ({\tt cname}, {\tt city}) is the primary key of {\tt Company}
+\item {\tt pid} is the primary key of {\tt WorksFor}
+\item {\tt skill} is the primary key of {\tt JobSkill}
+\item ({\tt pid}, {\tt skill}) is the primary key of {\tt PersonSkill}
+\item {\tt pid1} is a foreign key in {\tt Knows} referencing the primary key {\tt pid} in {\tt Person}
+\item {\tt pid2} is a foreign key in {\tt Knows} referencing the primary key {\tt pid} in {\tt Person}
+\item {\tt pid} is a foreign key in {\tt WorksFor} referencing the primary key {\tt pid} in {\tt Person}
+\item {\tt cname} in {\tt WorksFor} references a {\tt cname} that appears in {\tt Company}
+\item {\tt pid} is a foreign key in {\tt PersonSkill} referencing the primary key {\tt pid} in {\tt Person}
+\item {\tt skill} is a foreign key in {\tt PersonSkill} referencing the primary key {\tt skill} in {\tt Skill}
+\end{itemize}
+
+
+
+
+\newpage
+\section{Operations on polynomials and matrices using SQL aggregate functions}
+
+In the problems in this section, you will practice working with aggregate functions.
+
+A useful other aspect of solving these problems is that you will learn how relations can be used
+to represent polynomials and matrices and how SQL can be used to define operations on
+such objects.
+
+
+\begin{enumerate}
+
+\item Let $P(x)$ be a polynomial with integer coefficients.   For example, $P(x)$ could be the polynomial
+$3x^3 -2x^2 + 5$.
+  
+We can represent a polynomial $P(x)$ with a binary relation
+\[\text{{\bf P}(coefficient: integer, degree: integer)}\]
+wherein each pair $(c,d)$ represents the term
+$cx^d$ in $P(x)$.    For example, $P(x) = 3x^3 -2x^2 + 5$ is represented in {\bf P} as
+follows:
+
+\begin{center}
+\begin{tabular}{c}
+{\bf P} \\ 
+ $
+\begin{array}{c|c}
+\mbox{\rm coefficient} & \mbox{\rm degree} \\ \hline
+3 & 3 \\
+-2 & 2 \\
+0 & 1\\
+5 & 0 \\
+\end{array}$
+\end{tabular}
+\end{center}
+
+
+Write a SQL function
+
+\begin{center}
+{\tt 
+\begin{tabular}{l}
+create or replace function evaluatePolynomial(x numeric)\\
+$\qquad\quad$ returns numeric as \\
+\$\$ \\
+... \\
+\$\$ language sql
+\end{tabular}
+}
+\end{center}
+
+\medskip
+such that, for an input number $x_0$,
+
+\begin{center}
+\medskip
+{\tt 
+\begin{tabular}{l}
+select evaluatePolynomial($x_0$);
+\end{tabular}
+}
+\end{center}
+
+returns the value $P(x_0)$. For example,
+for the polynomial $P(x) =  3x^3 -2x^2 + 5$ and $x_0=7$,
+$P(7) = 3\times7^3 -2\times7^2 + 5 = 936$ and so
+
+\begin{center}
+\medskip
+{\tt 
+\begin{tabular}{l}
+select evaluatePolynomial(7);
+\end{tabular}
+}
+\end{center}
+
+should return the value 936.
+
+Your solution should work for any polynomial $P(x)$ of degree $n$, for $n\geq 0$.
+Observe that if $P(x) = c_0 + c_1x +
+c_2x^2+\cdots+c_nx^n$ is such a polynomial, then $P(x_0)$ is an aggregated sum, i.e.,
+$P(x_0) = \sum_{k=0}^n\, c_d(x_0)^k$.   (You can use the PostgreSQL function
+$\text{\tt power}(x,k)$ to computes the value $x^k$.)
+
+\item Let $p(x)$ and $q(x)$ be 2 polynomials with integer coefficients.  
+
+Let 
+{\tt P(coefficient, degree)} and
+{\tt Q(coefficient, degree)} be two binary relations representing $p(x)$ and $q(x)$, respectively.  
+E.g., if $p(x) = 2x^2-5x+5$ and $q(x) = 4x^4+ 3x^3 + x^2 - x$  
+then their representations in the relations {\bf P} and {\bf Q} are as follows:
+
+\begin{center}
+\begin{tabular}{ccc}
+\begin{tabular}{c}
+{\bf P} \\ 
+ $
+\begin{array}{c|c}
+\mbox{\rm coefficient} & \mbox{\rm degree} \\ \hline
+2 & 2 \\
+-5 & 1\\
+5 & 0 \\
+\end{array}$
+\end{tabular}
+&
+\begin{tabular}{c}
+{\bf Q} \\ 
+ $
+\begin{array}{c|c}
+\mbox{\rm coefficient} & \mbox{\rm degree} \\ \hline
+4 & 4\\
+3 & 3 \\
+1 & 2 \\
+-1 & 1 \\
+0  & 0
+\end{array}$
+\end{tabular}
+\end{tabular}
+
+
+\end{center}
+
+Write a SQL function
+\begin{center}
+{\tt 
+\begin{tabular}{l}
+create or replace function multiplicationPandQ() \\
+$\qquad\quad$ returns table(coefficient integer, degree integer) as \\
+\$\$ \\
+... \\
+\$\$ language sql;
+\end{tabular}
+}
+\end{center}
+that computes a binary relation representing the 
+multiplication of $p(x)$ and $q(x)$, i.e., the polynomial $p(x) * q(x)$.  
+
+For example, consider $p(x) = 2x^2 -5 x +5$ and $q(x) = 4x^4+ 3x^3 + x^2 - x$.
+Then $p(x)*q(x) = (8)x^6 + (6-20) x^5 +(2-15+20)x^4 +(-2-5+15)x^3+(5+5)x^2+(-5)x=8x^6-14x^5+7x^4+8x^3+10x^2-5x$.
+So, for these polynomials, your SQL query should return the relation
+
+\begin{center}
+\begin{tabular}{c}
+ $
+\begin{array}{c|c}
+\mbox{\rm coefficient} & \mbox{\rm degree} \\ \hline
+8 & 6 \\
+-14 & 5 \\
+7 & 4 \\
+8 & 3 \\
+10 & 2\\
+- 5 & 1\\
+0 & 0
+\end{array}$
+\end{tabular}
+\end{center}
+
+
+
+Your solution should work for arbitrary polynomials $p(x)$ and $q(x)$.
+ 
+
+\item Let $X=(x_1,\ldots,x_n)$ and $Y=(y_1,\ldots,y_n)$ be two $n$-dimensional
+  vectors of numbers. (We will assume that $n\geq 1$).   For example, for $n=3$, $X$ could be the vector $(7,-1,2)$ and $Y$ the vector $(1,1,-10)$.
+
+  The \emph{dot product} $X\cdot Y$ of $X$ and $Y$ is defined as the aggregated sum
+  \[x_1\times y_1+x_2\times y_2+\cdots+x_n\times y_n=\sum_{i=1}^n\, x_i\times y_i\]
+
+We will represent the vector $X$ with a binary relation
+{\bf X}(index,value) such that $(i,v)$ is in {\bf X} if $x_i = v$.  
+Analogously, we will represent the vector $Y$ with a binary relation {\bf Y}(index,value).
+For example, for the vectors $X=(7,-1,2)$ and $Y=(1,1,-10)$,
+{\bf X} and {\bf Y} are the following binary relations:
+
+\begin{center}
+  \begin{tabular}{ccc}
+\begin{tabular}{c}
+{\bf X} \\ 
+ $
+\begin{array}{c|c}
+\mbox{\rm index} & \mbox{\rm value} \\ \hline
+1 & 7 \\
+2 & -1 \\
+3 & 2 \\
+\end{array}$
+\end{tabular}
+    & \hskip 1in &
+\begin{tabular}{c}
+{\bf Y} \\ 
+ $
+\begin{array}{c|c}
+\mbox{\rm index} & \mbox{\rm value} \\ \hline
+1 & 1 \\
+2 & 1 \\
+3 & -10 \\
+\end{array}$
+\end{tabular}
+  \end{tabular}
+  \end{center}
+
+Write a SQL function
+
+\medskip
+\begin{center}
+{\tt 
+\begin{tabular}{l}
+create or replace function dotProductXandY() returns numeric as \\
+\$\$ \\
+... \\
+\$\$ language sql;
+\end{tabular}
+}
+\end{center}
+
+\medskip
+such that, {\tt select dotProductXandY()}
+returns the value $X\cdot Y$. For example,
+for the vectors $X = (7,-1,2)$ and $Y = (1,1,-10)$,
+$X\cdot Y = 7\times 1 + (-1)\times 1 + 2\times (-10) = 7 - 1-20=-14$, and therefore
+{\tt select dotProductXandY()}
+should return the value -14.
+
+Your solution should work for any pair of $n$-dimensional
+vectors $X$ and $Y$, with $n\geq 1$.
+\end{enumerate}
+
+
+\newpage
+\begin{enumerate}[resume]
+\item  Let $M$ be an $n\times n$ matrix of integers with $n\geq 1$.
+
+For $i, j\in [1,n]$, we will denote by $M[i,j]$ the
+element in matrix $M$ at row $i$ and column $j$.   We will assume that $n\geq 1$.
+
+Given two $n\times n$ matrix $M$ and $N$, denote by $M * N$ the matrix multiplication of $M$ and $N$.  
+By definition, $M * N$ is again a $n\times n$ matrix where, 
+for $i, j\in [1,n]$, $M* N[i,j]$ is defined by
+{\small
+\[M * N[i,j] = \sum_{k=1}^n M[i,k]\times N[k,j].\]
+}
+
+The matrix $M$ can be represented using a relation {\tt M} with schema 
+\begin{center}\begin{tabular}{c}
+({\tt row: integer}, {\tt colmn: integer}, {\tt value: integer})\end{tabular}\end{center} and similarly for
+the matrix $N$.\footnote{Notice that we use the attribute name `{\tt colmn}' since the word `{\tt column}' is a reserved
+word in PostgreSQL.}
+
+For example if $M$ is the $3\times 3$ matrix
+\[
+M = \begin{matrix}
+         1 & 2 & 3 \\
+         1 & -3 & 5 \\
+         4 & 0 &- 2
+         \end{matrix}
+\]
+
+then ${\tt M}$ is the following relation of $9$ tuples:
+
+\[
+\begin{array}{c}
+{\tt M} \\ 
+ \begin{array}{ccc}
+ {\tt row} & {\tt colmn} & {\tt value} \\ \hline
+1 & 1 & 1 \\
+1 & 2 & 2 \\
+1 & 3 & 3 \\
+2 & 1 & 1 \\
+2 & 2 & -3 \\
+2 & 3 & 5 \\
+3 & 1 & 4 \\
+3 & 2 & 0\\
+3 & 3 & -2 \\
+ \end{array}
+\end{array}
+\]
+
+Let $M$ and $N$ be two $n\times n$ matrices represented by the two relations {\tt M} and {\tt N}.
+
+Write a SQL query that computes a relation over schema ({\tt row}, {\tt column}, {\tt value}) that represents
+the matrix $M * N$. 
+Your solution should work for any $n\geq 1$.
+
+For example if $M$ and $N$ are given by the following $3\times 3$ matrices stored as the relations
+
+\[
+\begin{array}{ccc}
+\begin{array}{c}
+{\tt M} \\ 
+ \begin{array}{ccc}
+ {\tt row} & {\tt colmn} & {\tt value} \\ \hline
+1 & 1 & 1 \\
+1 & 2 & 2 \\
+1 & 3 & 3 \\
+2 & 1 & 1 \\
+2 & 2 & -3 \\
+2 & 3 & 5 \\
+3 & 1 & 4 \\
+3 & 2 & 0\\
+3 & 3 & -2 \\
+ \end{array}
+\end{array}
+&
+\begin{array}{c}
+{\tt N} \\ 
+ \begin{array}{ccc}
+ {\tt row} & {\tt colmn} & {\tt value} \\ \hline
+1 & 1 & -1 \\
+1 & 2 & 2 \\
+1 & 3 & -1 \\
+2 & 1 & 2\\
+2 & 2 & -3 \\
+2 & 3 & 4 \\
+3 & 1 & 0 \\
+3 & 2 & 0\\
+3 & 3 & 3 \\
+ \end{array}
+\end{array}
+\end{array}
+\]
+%
+then your query should produce the relational representation of $M * N$, i.e., the relation
+
+\[
+\begin{array}{c}
+{\tt M*N} \\ 
+ \begin{array}{ccc}
+ {\tt row} & {\tt colmn} & {\tt value} \\ \hline
+1 & 1 & 3 \\
+1 & 2 & -4 \\
+1 & 3 & 16 \\
+2 & 1 & -7\\
+2 & 2 & 11 \\
+2 & 3 & 2 \\
+3 & 1 & -4 \\
+3 & 2 & 8\\
+3 & 3 & -10 \\
+ \end{array}
+\end{array}
+\]
+
+
+
+\end{enumerate}
+
+\newpage
+\section{Simulating Set Predicates with the COUNT Function}
+
+The problems in this section aim to illustrate that the set predicates of SQL are redundant provided one can use the
+COUNT aggregate function.   This underscores the importance and naturalness of counting to express quantifiers.
+
+Rewrite each of the following SQL queries into an equivalent SQL query wherein the
+set predicates  are simulated using the {\tt COUNT} aggregate function.
+In other words, you solution should use the COUNT aggregate function and can not use any of the [NOT] EXISTS, [NOT] IN, 
+SOME, and ALL set predicates.   You can also not use the set operations UNION, INTERSECT, and EXCEPT.
+
+\begin{enumerate}[resume]
+\item  
+{\small
+\begin{verbatim}
+select p.pid, p.name
+from   Person p
+where  p.city = 'Bloomington' and 
+       exists(select 1
+              from   personSkill ps
+              where  ps.pid = p.pid and ps.skill  <> 'Programming' and
+                     ps.skill in (select ps1.skill
+                                  from   worksFor w1, personSkill ps1
+                                  where  w1.cname = 'Netflix' and 
+                                         ps1.skill <> 'AI' and 
+                                         w1.pid = p.pid));
+\end{verbatim}}
+\item 
+{\small
+\begin{verbatim}
+select w.pid, w.cname, w.salary
+from   worksFor w
+where  not(w.salary <= all (select w1.salary
+                            from   worksFor w1, Company c
+                            where  w.pid <> w1.pid and w.cname = w1.cname and 
+                                   c.city not in (select p.city
+                                                  from   Person p
+                                                  where  p.birthyear <> 1990)));
+                                               
+\end{verbatim}
+}
+\end{enumerate}
+\newpage
+\section{Solving queries using aggregate functions}
+
+Formulate the following queries in SQL.   You should use aggregate functions to solve these queries.  You can use views,
+including temporary views as well as parameterized views defined by
+user-defined functions that return relations (i.e., tables).
+
+\begin{enumerate}[resume]
+\item Find the pid and name of each person who lives in `Bloomington' and who knows at most one
+person who has at least 3 job skills.
+\item Find the pid and name of each person who has all but three job skills.   I.e., such a person lacks precisely three
+job skills from the possible job skills that are stored in the relation {\tt jobSkill}.    
+\item Find the cname of each company along with the number of persons who work for that company and
+who know at least two other persons who also work for that company.
+(Make sure to also consider companies that have no such employees and to include for each
+such company a tuple of the form (cname,0) in the answer.)
+\item  Find the pid and name of each person who works for 'Netflix' and who knows the most persons who work for `IBM'.
+\item Find the cname of each company who spends the highest aggregated amount on the salaries of persons who 
+work for that company and who have the fewest skills.
+\end{enumerate}
+\newpage
+\section{Queries with quantifiers using Venn diagrams with conditions}
+
+Using the method of Venn diagrams with conditions and without using the {\tt COUNT} function,
+write SQL queries for the following queries with quantifiers.
+
+In these problems, you must write appropriate views and parameterized views for the sets $A$ and $B$
+that occur in the Venn diagram with conditions for these queries.  (See the lecture on Queries with Quantifiers.)
+
+\begin{enumerate}[resume]
+\item Find the pid and name of each person who does not know any person who has a salary strictly above 55000.
+\item Find the pid and name of each person who knows all the persons who (a) work  at Netflix, (b) make at least 55000, and
+(c) are born after 1985.
+
+\noindent
+{\bf Changed 'are born before 1990' by 'are born after 1985'}.
+
+\item Find the cname of each company who only employs persons who make less than 55000.
+\item Find the pairs of different skills $(s_1,s_2)$ such that not every person who works at `IBM' and has skill $s_1$  
+knows a person who works at `Netflix' and has skill $s_2$.
+\item The concept of Venn diagrams with conditions can be generalized to more than 2 sets.   Here is a query that requires
+a condition on a Venn diagram with 3 sets.   To solve this problem, you should consider definining 3 parameterized views.
+
+Find each triple $(p, c, s)$ where $p$ is the pid of a person, $c$ is the cname of a company, and $s$ is a skill, such that
+each person who is known by the person with pid $p$ and who works for company with cname $c$ is a person who has the jobskill $s$.
+
+
+\end{enumerate}
+
+\newpage
+\section{Queries with quantifiers using Venn diagrams with counting conditions}
+
+Using the method of Venn diagram with counting conditions, write SQL queries for 
+the following queries with quantifiers.
+
+In these problems, you should write appropriate views and parameterized views for the sets $A$ and $B$
+that occur in the Venn diagrams for these queries.  (See the lecture on Queries with Quantifiers Using the COUNT function.)
+
+\begin{enumerate}[resume]
+\item Find the pid and name of each person who has more than 2 of the combined set of job skills of
+persons who work for `IBM'.
+
+{\bf Changed `more than 3' to more than 2' and `Netflix' to 'IBM'}.
+
+\item Find the cname of each company that employs an odd number of persons whose salary is at least 50000.
+\item Find the pid and name of each person who knows at least 2 persons who each have exactly 3 job skills.
+\item Find the pairs $(p_1,p_2)$ of different person pids such that the person with pid $p_1$ and the
+person with pid $p_2$ knows the same set of persons.
+\item Find the pairs $(p_1,p_2)$ of different person pids such that the person with pid $p_1$ and
+the person with pid $p_2$ knows the same number of persons.
+\end{enumerate}
+\newpage
+\end{document}
+\section{Triggers}
+
+To begin the problems in this section, you should first remove the entire database, including the relation schemas.
+You should then create the relations but without specifying the primary and foreign key constraints.
+You should also not yet populate the relations with data.
+
+Solve the following problems:
+\begin{enumerate}[resume]
+\item \label{firstTriggerQuestion} Develop appropriate insert and delete triggers that implement the primary key and foreign key constraints
+that are specified for the {\tt Person}, {\tt Knows}, {\tt Company}, and {\tt Worksfor} relations.
+Your triggers should report appropriate error conditions.
+
+For this problem, implement the triggers such that foreign key constraints are maintained
+using the cascading delete semantics. 
+
+For a reference on cascading deletes associated with foreign keys maintenance consult the PostgreSQL manual page
+\begin{center}
+{\tt https:\/\/www.postgresql.org\/docs\/9.2\/ddl-constraints.html}
+\end{center}
+
+Test your triggers using appropriate inserts and deletes.
+
+\item Repeat Problem~\ref{firstTriggerQuestion} but now implement the triggers such that foreign key constraints are maintained
+using the restrict delete semantics.
+
+For a reference on restricted deletes associated with foreign keys maintenance consult the PostgreSQL manual page
+\begin{center}
+{\tt https:\/\/www.postgresql.org\/docs\/9.2\/ddl-constraints.html}
+\end{center}
+
+Test your triggers using appropriate inserts and deletes.
+
+%\item Develop a trigger for the constraint that states that each {\tt cname} in {\tt Worksfor} must references  {\tt cname}
+%in {\tt Company}.   Since the trigger resembles a foreign key constraints, use the cascade delete semantics for
+%its implementation.
+%
+%Test your trigger using appropriate inserts and deletes.
+
+\item Consider the following view definition
+
+\begin{verbatim}
+create or replace view PersonKnowsNumberofPersons as 
+  (select p1.pid, p1.name, 
+         (select count(1)
+          from   Person p2
+          where (p1.pid, p2.pid) in (select k.pid1, k.pid2
+                                     from Knows k)) as NumberofKnownPersons
+    from Person p1);                                                          
+\end{verbatim}
+
+This view defines the set of tuples $(p,n,c)$ where $p$ and $n$ are the pid and name of a person and $c$ is
+the number of persons who are known by the person with pid $p$.
+
+You should not create this view!
+Rather your task is to create a relation {\tt  PersonKnowsNumberofPersons} that maintains a
+materialized view in accordance with the above view definition under insert and delete operations on the
+{\tt Person} and {\tt Knows} relation.
+
+Your triggers should be designed to be incremental.   In particular, when an insert or delete occurs, you should not always
+have to reevaluate all the number of persons known by persons.
+Rather the maintenance of {\tt PersonKnowsNumberofPersons}
+should only apply to the person information that is affected by the insert or delete.
+
+
+\item Consider the following view definition
+
+\begin{verbatim}
+create or replace view BloomingtonPersonWhoKnowsAtLeastTwoPersons as 
+  (select p.pid, p.name, p.birthyear
+   from   Person p
+   where  p.city = 'Bloomington' and
+          exists (select 1
+                  from   knows k1, knows k2
+                  where  p.pid = k1.pid1 and
+                         p.pid = k2.pid1 and
+                         k1.pid2 <> k2.pid2));
+                                     
+\end{verbatim}
+
+You should not create this view!
+Rather your task is to create a relation {\tt  BloomingtonPersonWhoKnowsAtLeastTwoPersons} that maintains a
+materialized view in accordance with the above view definition under insert and delete operations on the
+{\tt Person} and {\tt Knows} relation.
+
+In other words, the state of this relation needs to be maintained under inserts and deletes in the database
+and should always reflect the definition of the view above.
+Besides the relation  {\tt  BloomingtonPersonWhoKnowsAtLeastTwoPersons}, you are allowed to maintain
+another relation (or other relations) that can assist in maintaining this materialized view.  For example,
+you may wish to maintain a relation that keeps track of  the number of persons know for each employee.
+
+Provide tests that show that your solution works.
+
+%\item As currently used, the {\tt Knows} relation is not necessarily symmetric.  I.e., it is possible that
+%$(p_1,p_2)$ is in {\tt Knows} but $(p_2,p_1)$ is not.
+%
+%In this problem, you are required to maintain a symmetric {\tt Knows} relation.  In other words, it must by the
+%case that $(p_1,p_2)$ is in {\tt Knows} if and only if $(p_2,p_1)$ is in {\tt Knows}.
+%
+%Write insert and delete triggers that maintain the symmetricity requirement for the {\tt Knows} relation.  I.e.,
+%if a pair $(p_1,p_2)$ is inserted in {\tt Knows} then a side-effect of an insert trigger should be that then both
+%$(p_1,p_2)$ and $(p_2,p_1)$ become part of {\tt Knows}.    Furthermore, if $(p_1,p_2)$ is deleted from the {\tt Knows} relation then
+%$(p_2,p_1)$ should also be deleted from {\tt Knows}.    
+%
+%To solve this problem, you can use auxiliary relations and or views to maintain the symmetricity condition of the
+%{\tt Knows} relation.
+
+\end{enumerate}
+
+
+
+
+
+
+
+\end{document}
+
+
+
+

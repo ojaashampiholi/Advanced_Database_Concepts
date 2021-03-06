@@ -1,0 +1,7 @@
+\o 'D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 2/output.txt'
+
+\i 'D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 2/assignment2.sql'
+
+\o 'D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 2/newDataOutput.txt'
+
+\i 'D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 2/newDataCheck.sql'

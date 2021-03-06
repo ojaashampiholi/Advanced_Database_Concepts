@@ -1,0 +1,353 @@
+CREATE DATABASE
+You are now connected to database "osh" as user "postgres".
+psql:D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql:5: NOTICE:  table "employee" does not exist, skipping
+DROP TABLE
+psql:D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql:6: NOTICE:  table "company" does not exist, skipping
+DROP TABLE
+psql:D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql:7: NOTICE:  table "jobskill" does not exist, skipping
+DROP TABLE
+psql:D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql:8: NOTICE:  table "manages" does not exist, skipping
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 8
+INSERT 0 18
+INSERT 0 40
+INSERT 0 16
+
+Question 1
+
+Question 1.1
+
+Company Table
+   cname   |     city
+-----------+--------------
+ Apple     | Bloomington
+ Amazon    | Chicago
+ Amazon    | Denver
+ Amazon    | Columbus
+ Google    | NewYork
+ Netflix   | Indianapolis
+ Netflix   | Chicago
+ Microsoft | Bloomington
+(8 rows)
+
+
+Employee Table
+  id  |  ename   |     city     |  cname  | salary
+------+----------+--------------+---------+--------
+ 1001 | Jean     | Bloomington  | Apple   |  60000
+ 1002 | Vidya    | Indianapolis | Apple   |  45000
+ 1003 | Anna     | Chicago      | Amazon  |  55000
+ 1004 | Qin      | Denver       | Amazon  |  55000
+ 1005 | Aya      | Chicago      | Google  |  60000
+ 1006 | Ryan     | Chicago      | Amazon  |  55000
+ 1007 | Danielle | Indianapolis | Netflix |  50000
+ 1008 | Emma     | Bloomington  | Amazon  |  50000
+ 1009 | Hasan    | Bloomington  | Apple   |  60000
+ 1010 | Linda    | Chicago      | Amazon  |  55000
+ 1011 | Nick     | NewYork      | Google  |  55000
+ 1012 | Eric     | Indianapolis | Apple   |  50000
+ 1013 | Lisa     | Indianapolis | Netflix |  55000
+ 1014 | Deepa    | Bloomington  | Apple   |  50000
+ 1015 | Chris    | Denver       | Amazon  |  60000
+ 1016 | YinYue   | Chicago      | Amazon  |  55000
+ 1017 | Latha    | Indianapolis | Netflix |  60000
+ 1018 | Arif     | Bloomington  | Apple   |  50000
+(18 rows)
+
+
+Jobskill Table
+  id  |      skill
+------+------------------
+ 1001 | Programming
+ 1001 | AI
+ 1002 | Programming
+ 1002 | AI
+ 1004 | AI
+ 1004 | Programming
+ 1005 | AI
+ 1005 | Programming
+ 1005 | Networks
+ 1006 | Programming
+ 1006 | OperatingSystems
+ 1007 | OperatingSystems
+ 1007 | Programming
+ 1008 | Programming
+ 1009 | OperatingSystems
+ 1009 | Networks
+ 1010 | Networks
+ 1011 | Networks
+ 1011 | OperatingSystems
+ 1011 | AI
+ 1011 | Programming
+ 1012 | AI
+ 1012 | OperatingSystems
+ 1012 | Programming
+ 1013 | Programming
+ 1013 | AI
+ 1013 | OperatingSystems
+ 1013 | Networks
+ 1014 | OperatingSystems
+ 1014 | AI
+ 1014 | Programming
+ 1014 | Networks
+ 1015 | Programming
+ 1015 | AI
+ 1016 | Programming
+ 1016 | OperatingSystems
+ 1016 | AI
+ 1017 | Networks
+ 1017 | Programming
+ 1018 | AI
+(40 rows)
+
+
+Manages Table
+ mid  | eid
+------+------
+ 1001 | 1002
+ 1001 | 1009
+ 1001 | 1012
+ 1009 | 1018
+ 1009 | 1014
+ 1012 | 1014
+ 1003 | 1004
+ 1003 | 1006
+ 1003 | 1015
+ 1015 | 1016
+ 1006 | 1008
+ 1006 | 1016
+ 1016 | 1010
+ 1005 | 1011
+ 1013 | 1007
+ 1013 | 1017
+(16 rows)
+
+
+
+Question 1.2
+
+CASE 1
+psql:D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql:149: ERROR:  insert or update on table "jobskill" violates foreign key constraint "jobskill_id_fkey"
+DETAIL:  Key (id)=(1019) is not present in table "employee".
+
+CASE 2
+INSERT 0 1
+
+CASE 3
+DELETE 1
+
+CASE 4
+psql:D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql:173: ERROR:  insert or update on table "manages" violates foreign key constraint "manages_eid_fkey"
+DETAIL:  Key (eid)=(1025) is not present in table "employee".
+
+Dropping the table and redefining them with different key constraints
+
+DROP TABLE
+psql:D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql:181: NOTICE:  drop cascades to 3 other objects
+DETAIL:  drop cascades to constraint jobskill_id_fkey on table jobskill
+drop cascades to constraint manages_mid_fkey on table manages
+drop cascades to constraint manages_eid_fkey on table manages
+DROP TABLE
+DROP TABLE
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 8
+INSERT 0 18
+INSERT 0 40
+INSERT 0 16
+
+CASE 5
+DELETE 1
+
+CASE 6
+INSERT 0 1
+
+DROP TABLE
+psql:D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql:318: NOTICE:  drop cascades to 3 other objects
+DETAIL:  drop cascades to constraint jobskill_id_fkey on table jobskill
+drop cascades to constraint manages_mid_fkey on table manages
+drop cascades to constraint manages_eid_fkey on table manages
+DROP TABLE
+DROP TABLE
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 8
+INSERT 0 18
+INSERT 0 40
+INSERT 0 16
+
+Question 2
+
+Question 2.1
+  id  |  ename   | salary
+------+----------+--------
+ 1002 | Vidya    |  45000
+ 1007 | Danielle |  50000
+ 1012 | Eric     |  50000
+(3 rows)
+
+
+Question 2.2
+ id | ename
+----+-------
+(0 rows)
+
+
+Question 2.3
+  id  |  ename
+------+----------
+ 1009 | Hasan
+ 1018 | Arif
+ 1014 | Deepa
+ 1006 | Ryan
+ 1016 | YinYue
+ 1010 | Linda
+ 1007 | Danielle
+ 1017 | Latha
+(8 rows)
+
+
+Question 2.4
+  id  | ename
+------+--------
+ 1012 | Eric
+ 1016 | YinYue
+ 1013 | Lisa
+ 1014 | Deepa
+ 1005 | Aya
+ 1011 | Nick
+(6 rows)
+
+
+Question 2.5
+  id  | ename | salary
+------+-------+--------
+ 1003 | Anna  |  55000
+ 1001 | Jean  |  60000
+(2 rows)
+
+
+Question 2.5 Method 2
+  id  | ename | salary
+------+-------+--------
+ 1001 | Jean  |  60000
+ 1003 | Anna  |  55000
+(2 rows)
+
+
+Question 2.6
+ eid  | eid
+------+------
+ 1002 | 1009
+ 1002 | 1012
+ 1009 | 1002
+ 1009 | 1012
+ 1012 | 1002
+ 1012 | 1009
+ 1004 | 1006
+ 1004 | 1015
+ 1006 | 1004
+ 1006 | 1015
+ 1015 | 1004
+ 1015 | 1006
+ 1008 | 1016
+ 1016 | 1008
+ 1014 | 1018
+ 1018 | 1014
+ 1007 | 1017
+ 1017 | 1007
+(18 rows)
+
+
+Question 2.7
+   cname
+-----------
+ Microsoft
+ Google
+ Netflix
+(3 rows)
+
+
+Question 2.7 Method 2
+   cname
+-----------
+ Microsoft
+ Google
+ Netflix
+(3 rows)
+
+
+Question 2.8
+  id  |  cname
+------+---------
+ 1015 | Amazon
+ 1017 | Netflix
+ 1005 | Google
+ 1009 | Apple
+ 1001 | Apple
+(5 rows)
+
+
+Question 2.8 Method 2
+  cname  |  id
+---------+------
+ Apple   | 1001
+ Google  | 1005
+ Apple   | 1009
+ Amazon  | 1015
+ Netflix | 1017
+(5 rows)
+
+
+Question 2.9
+  id  | ename
+------+-------
+ 1001 | Jean
+ 1003 | Anna
+ 1004 | Qin
+ 1005 | Aya
+ 1006 | Ryan
+ 1009 | Hasan
+ 1010 | Linda
+ 1013 | Lisa
+ 1015 | Chris
+ 1017 | Latha
+(10 rows)
+
+
+Question 2.10
+  id  | ename
+------+--------
+ 1016 | YinYue
+ 1003 | Anna
+(2 rows)
+
+
+Question 2.10 Method 2
+  id  | ename
+------+--------
+ 1016 | YinYue
+ 1003 | Anna
+(2 rows)
+
+
+Question 2.10 Method 3
+  id  | ename
+------+--------
+ 1003 | Anna
+ 1016 | YinYue
+(2 rows)
+
+
+You are now connected to database "postgres" as user "postgres".
+DROP DATABASE

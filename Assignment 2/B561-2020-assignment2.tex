@@ -1,0 +1,386 @@
+\documentstyle{article}
+
+\begin{document}
+
+\centerline{\Large B561 Advanced Database Concepts}
+\centerline{\Large Assignment 2}
+\medskip
+
+This assignment is designed to enhance your skills in working with SQL.   The lectures on which it relies are SQL Part 1, SQL Part 2, 
+Views, and Expressions and Functions in SQL.
+
+To turn in your assignment, you will need to upload to Canvas a single file with name {\tt assignment2.sql} which contains 
+the necessary SQL statements that solve the problems in this assignment.   
+The {\tt assignment2.sql} file must be such that the AI's can run it in their PostgreSQL environment.  
+In addition, you will need to upload a separate {\tt assignment2.txt} file that contains the results of running
+your queries.
+We have posted the exact requirements and an example for uploading your solution files.  (See the module
+{\tt Instructions for turning in assignments}.)
+
+
+In the database for this assignment, 
+we maintain a set of persons {\tt Person}, a relation {\tt Knows}, a set of companies {\tt Company}, a relation {\tt WorksFor}, 
+a set of job skills ({\tt JobSkill}), and a relation {\tt PersonSkills}.   
+(The data for this database are given along with this assignment are
+in the {\tt data.sql} file.)
+The schemas for these sets and relations are as follows (primary keys are underlined):
+
+{\small
+\begin{center}
+{\tt
+  \begin{tabular}{l}
+  {Person}($\underline{\tt pid: integer}$, name:text, city: text, birthYear: integer)\\
+  {Knows}($\underline{\tt pid1:integer, pid2:integer}$) \\
+  {Company}($\underline{\tt cname:text,  city:text}$) \\
+  {WorksFor}($\underline{\tt pid: integer}$, cname:text, salary:integer) \\
+   {JobSkill}($\underline{\tt skill:text }$) \\
+  {PersonSkill}($\underline{\tt pid: text, skill:text}$),\\
+  \end{tabular}
+  }
+\end{center}
+}
+
+\begin{itemize}
+\item The {\tt city} and {\tt birthYear} in {\tt Person}
+specify the city in which the person lives and his or her birth year.
+
+\item The relation {\tt Knows} maintains a set of pairs $(p_1,p_2)$ where $p_1$ 
+and $p_2$ are pids of persons.   The pair $(p_1,p_2)$ indicates that the person with
+pid $p_1$ knows the person with pid $p_2$.
+We do not assume that the relation {\tt Knows} is
+symmetric: it is possible that $(p_1,p_2)$ is in the relation but that
+$(p_2,p_1)$ is not.
+
+\item The {\tt city} attribute in
+{\tt Company} indicates a city in which the company is located.
+(Companies may be located in multiple cities.)
+
+\item The relation {\tt WorksFor} stores the unique company (identified by {\tt cname}) for which a person
+works along with the salary he or she makes at that company.
+(Incidentally, it is possible that a person in the {\tt Person} relation does not
+work for any company.)
+
+\item The relation {\tt JobSkill} only has the attribute {\tt skill} which is the name of a possible
+job skill.    
+
+\item The relation {\tt PersonSkill} provides for each person his or her job skills.
+A person may have multiple job skills.   It is also possible that a person does not
+have any job skills.
+\end{itemize}
+
+We assume the following primary key and foreign key constraints:
+\begin{itemize}
+\item {\tt pid} is the primary key of {\tt Person}
+\item ({\tt pid1}, {\tt pid2}) is the primary key of {\tt Knows}
+\item ({\tt cname}, {\tt city}) is the primary key of {\tt Company}
+\item {\tt pid} is the primary key of {\tt WorksFor}
+\item {\tt skill} is the primary key of {\tt JobSkill}
+\item ({\tt pid}, {\tt skill}) is the primary key of {\tt PersonSkill}
+\item {\tt pid1} is a foreign key in {\tt Knows} referencing the primary key {\tt pid} in {\tt Person}
+\item {\tt pid2} is a foreign key in {\tt Knows} referencing the primary key {\tt pid} in {\tt Person}
+\item {\tt pid} is a foreign key in {\tt WorksFor} referencing the primary key {\tt pid} in {\tt Person}
+\item {\tt cname} in {\tt WorksFor} references a {\tt cname} that appears in {\tt Company}
+\item {\tt pid} is a foreign key in {\tt PersonSkill} referencing the primary key {\tt pid} in {\tt Person}
+\item {\tt skill} is a foreign key in {\tt PersonSkill} referencing the primary key {\tt skill} in {\tt Skill}
+\end{itemize}
+
+
+
+\newpage
+\section{Formulating queries in Pure SQL}
+
+Formulate the following queries in {\bf Pure} SQL.   Pure SQL is that fragment of SQL in which you can NOT
+use views, 
+including temporary and parameterized views, user-defined functions, or {\tt GROUP BY} and aggregate functions.
+Pure SQL is actually that part of SQL covered in lectures SQL Part 1 and SQL Part 2.
+
+\begin{enumerate}
+%\setcounter{enumi}{\theenumTemp}
+\item  Find the pid and name of each person who (a)
+works for a company located in `Bloomington'  and (b)
+knows as person who lives in `Chicago'.
+
+\begin{enumerate}
+\item   Formulate this query in SQL without using subqueries and set predicates.
+You are allowed to use the SQL operators {\tt INTERSECT}, {\tt UNION}, and {\tt EXCEPT}.
+\item   Formulate this query in SQL by only using the {\tt  IN} or {\tt NOT IN} set predicates.
+\item   Formulate this query in SQL by only using the {\tt SOME} or {\tt ALL} set predicates.
+\item   Formulate this query in SQL by only using the {\tt EXISTS} or {\tt NOT EXISTS} set predicates.
+\end{enumerate}
+
+
+\item  Find the pid and name of each person who knows another person who works for `Google', but
+who does not know a person who works at `Amazon' and has the `Programming' skill.
+
+\begin{enumerate}
+\item   Formulate this query in SQL without using subqueries and set predicates.
+You are allowed to use the SQL operators {\tt INTERSECT}, {\tt UNION}, and {\tt EXCEPT}.
+\item   Formulate this query in SQL by only using the {\tt  IN} or {\tt NOT IN} set predicates.
+\item   Formulate this query in SQL by only using the {\tt SOME} or {\tt ALL} set predicates.
+\item   Formulate this query in SQL by only using the {\tt EXISTS} or {\tt NOT EXISTS} set predicates.
+\end{enumerate}
+
+\item  Find the cname of each company which employs at least two different persons who have
+at least one common jobskill.
+
+\begin{enumerate}
+\item   Formulate this query in SQL without using subqueries and set predicates.
+You are allowed to use the SQL operators {\tt INTERSECT}, {\tt UNION}, and {\tt EXCEPT}.
+\item   Formulate this query in SQL by only using the {\tt  IN} or {\tt NOT IN} set predicates.
+\item   Formulate this query in SQL by only using the {\tt EXISTS} or {\tt NOT EXISTS} set predicates.
+\end{enumerate}
+
+\newpage
+\item   Find the pid and name of each person who works for `IBM' and who has a higher salary
+that any person with the `Databases' skill and who also works at `IBM'.
+
+{\bf Replaced `Database' with `Databases'.}
+\begin{enumerate}
+\item   Formulate this query in SQL without using set predicates.
+Furthermore, for this question, you can use views.
+
+{\bf Replaced `subqueries' with `set predicates'. Furthermore, for this question, you can use views.}
+\item   Formulate this query in SQL by using subqueries and
+set predicates.
+\end{enumerate}
+
+\item  Find the cname of each company along with the pids and names
+of the persons who work for that company and who have the next to lowest salary (i.e., the second lowest salary)
+at that company.
+
+\item Find the pid and name of each person who knows at most one other person, and that other person has at least
+2 job skills.
+
+\item Find the each job skill that is not the job skill of any person who works for `Yahoo' or for `Netflix'.
+
+{\bf Replaced `IBM' with `Netflix'.}
+\item Find the pairs of job skills $(s_1,s_2)$ such that each person with job skill $s_1$ also has job skill $s_2$.
+
+\item Find the pairs of company names $(c_1,c_2)$ such that no person who works for the
+company with cname $c_1$ has a higher salary than any person who works for the
+company  with cname $c_2$.
+
+\item Find the pid of each person who has all but 2 job skills.  I.e., such a person lacks exactly two job skills
+from among the possible job skills. 
+
+\item  Find each tuple $(p_1,p_2, p_3)$ 
+such that if the person with pid $p_1$ knows the person with pid $p_2$ then the person
+with pid $p_3$ does not know the person with pid $p_2$. 
+\end{enumerate}
+\newpage
+\section{Formulating queries in SQL using views}
+
+Formulate the following queries in {\bf Pure} SQL augmented with
+views,  and this includes temporary and parameterized views.
+However, you can not use  {\tt GROUP BY} and aggregate functions.
+
+\begin{enumerate}
+\item  \label{viewone}  
+\begin{enumerate} 
+\item Define a view {\tt SalaryAbove50000} that defines the subrelation of
+{\tt Person} consisting of the employees whose salary is strictly above 50000.
+
+{\bf Replaced `Employee' by `Person'.}
+
+Test you view.
+
+%\item Define a view {\tt KnowsIBMEmployee} that returns the set of pids of persons
+%who know a person who works for `IBM'.
+
+\item   Define a view {\tt IBMEmployee} that returns the set of pids of persons
+who works for `IBM'.
+
+{\bf Replaced the previous question 2.1.b with this new question.}
+
+Test your view.
+
+\item Using the views {\tt SalaryAbove50000} and {\tt IBMEmployee}, write the
+following query in SQL:  `Find the pid and name of each person who (a) works for `Apple', (b) has a salary which
+is strictly above 50000, and (c) who does not know any 
+person who works at `IBM' with a salary strictly above 50000.'
+\end{enumerate}
+
+\item  \label{viewone}  
+\begin{enumerate} 
+\item Define a parameterized view {\tt SalaryAbove(amount integer)} that returns, for a given
+value for the {\tt amount} parameter, the subrelation of
+{\tt Person} consisting of the employees whose salary is strictly above that of this value.
+
+{\bf Replaced `Employee' by `Person'.}
+
+
+Test your view for the parameter values $30000$, $50000$, and $70000$.
+
+\item Define a view {\tt KnowsEmployeeAtCompany(cname text)} that returns the set of pids of persons
+who know a person who works at the company given by the value of the parameter {\tt cname}.
+
+Test you view for the parameters `Yahoo', `Google', and `Amazon'.
+
+\item Using the parameterized views 
+\begin{center}{{\tt SalaryAbove(amount)}} \end{center}
+%
+and 
+\begin{center}{{\tt KnowsEmployeeAtCompany(cname)},} \end{center}
+%
+find each triple $(s,c,p)$ such that 
+\begin{itemize}
+\item $s$ is the value of any possible salary that occurs in the {\tt Worksfor} relation;
+
+{\bf Replaced `Employee' by `Worksfor'.}.
+
+
+\item $c$ is a company name that occurs in the {\tt Company} relation; and
+\item $p$ is the pid of a person who (a) works for the company with name $c$, (b) has a salary which
+is above the value $s$, and (c) knows a person
+who works at another company than that with name $c$ and who has a salary that is not above the value $s$.
+\end{itemize}
+\end{enumerate}
+
+\end{enumerate} 
+\newpage
+\section{Queries with expressions and functions; Boolean queries}
+
+\begin{enumerate}
+ \item  Let $A(x)$ be the relation schema for a set of positive integers.
+  (The domain of $x$ is {\tt INTEGER}.)
+  
+  Write a SQL statement that produces a table which,
+  for each $x\in A$, lists the tuple $(x,\sqrt{x},x^2,2^x,x!,\ln x)$.
+
+  For example, if $A=\{1,2,3,4,5\}$ then your SQL statement should
+  produce the following table:
+  
+  {\small
+  \begin{verbatim}
+   x |  square_root_x   | x_squared | two_to_the_power_x | x_factorial |    logarithm_x    
+---+------------------+-----------+--------------------+-------------+-------------------
+   1 |                1 |         1 |                  2 |           1 |                 0
+   2 |  1.4142135623731 |         4 |                  4 |           2 | 0.693147180559945
+   3 | 1.73205080756888 |         9 |                  8 |           6 |  1.09861228866811
+   4 |                2 |        16 |                 16 |          24 |  1.38629436111989
+   5 | 2.23606797749979 |        25 |                 32 |         120 |   1.6094379124341
+( 5 rows)
+\end{verbatim}
+}%end \tiny
+
+
+ \item\label{booleanQueries}  
+ Let $A(x)$, $B(x)$ and $C(x)$ be three unary relation schemas that
+  represent sets $A$, $B$ and $C$ of integers.    The domain of $x$ is {\tt INTEGER}.
+  
+  Give answers to the following problems.
+  You should provide two different SQL queries.   One answer
+  wherein you can use the set operations INTERSECT and/or EXCEPT, and a second
+  answer wherein you can not use these operators.\footnote{You are permitted to use the UNION operator.}
+  You can use user-defined functions but you can not use aggregate functions.
+\begin{enumerate}
+ \item  Determine the truth-value of $A\cap B\neq \emptyset$.
+For example, if $A=\{1,2\}$ and $B=\{1,4,5\}$ then the result of your SQL statements should be
+
+\begin{verbatim}
+ answer 
+--------
+ t
+(1 row)
+\end{verbatim}
+
+If, however, $A=\{1,2\}$ and $B=\{3,4\}$ then the result of your statement should be
+
+\begin{verbatim}
+ answer 
+--------
+ f
+(1 row)
+\end{verbatim}
+
+ \item  Determine the truth-value of $A\subseteq B$.
+ \item  Determine the truth-value of $(A\cup B) = C$.
+ \item  Determine the truth-value of $|(A-B) \cup (B- C)| = 1$.
+\end{enumerate}
+
+
+\item For each of the following statements, write a boolean SQL query that determines the
+truth value of the following statements:
+\begin{enumerate}
+\item  Each person has at least two job skills.
+\item  There exists a company all of whose employees have a salary above 55000.
+\item  There exists a pair of different persons who know the same persons.
+\end{enumerate}
+
+
+\item  Let $W(A,B)$ be a relation schema.   The domain of $A$ is {\tt INTEGER} and the domain of $B$ is
+  {\tt text}.
+
+  Write a SQL query with returns the $A$-values of tuples in $W$ if
+  $A$ is a primary key of $W$.  Otherwise, i.e., if $A$ is not a
+  primary key, then your query should return the $A$-values of tuples
+  in $W$ for which the primary key property is violated.  (In this
+  query you should consider temporary views using the {\tt WITH} SQL statement.)
+
+  For example, consider the following relation instance for $W$:
+  \[
+  \begin{array}{c}
+    W \\
+    \begin{array}{c|c}
+      A & B \\ \hline
+      1 & \mbox{\rm John} \\
+      2 & \mbox{\rm Ellen} \\
+      3 & \mbox{\rm Ann}
+    \end{array}
+  \end{array}
+  \]
+
+  Then your query should return the following answer since, in this
+  case, $A$ satisfies the primary property for $W$.
+
+\begin{center}
+  \begin{verbatim}
+   a 
+   ---
+   1
+   2
+   3
+   (3 rows)
+ \end{verbatim}
+ \end{center}
+
+  However, if we have the following relation instance for $W$
+
+  \[
+  \begin{array}{c}
+    W \\
+    \begin{array}{c|c}
+      A & B \\ \hline
+      1 & \mbox{\rm John} \\
+      2 & \mbox{\rm Ellen} \\
+      2 & \mbox{\rm Linda} \\
+      3 & \mbox{\rm Ann} \\
+      4 & \mbox{\rm Ann} \\
+      4 & \mbox{\rm Nick} \\
+      4 & \mbox{\rm Vince}\\
+      4 & \mbox{\rm Lisa}
+    \end{array}
+  \end{array}
+  \]
+
+  then your query should return the following answer because the
+  primary key property of $A$ for $W$ is violated for the $A$-values
+  $2$ and $4$.
+
+  \begin{verbatim}
+   a 
+   ---
+   2
+   4
+   (2 rows)
+ \end{verbatim}
+    \newcounter{enumTemp}
+    \setcounter{enumTemp}{\theenumi}
+
+
+\end{enumerate} 
+
+\end{document}
+
+
+

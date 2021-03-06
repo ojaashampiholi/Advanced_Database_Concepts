@@ -1,0 +1,112 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb,amsfonts,amsbsy,amsmath,amsthm,stmaryrd}
+
+\title{Assignment1}
+\author{Ojaas Hampiholi }
+\date{02 September, 2020}
+
+\begin{document}
+
+\maketitle
+
+\section*{TRC Representation of Queries}
+
+\item{3.1 - Find the id, name, and salary of each employee who lives in Indianapolis and whose salary is in the range [30000; 50000].}
+$$
+\begin{array}{l}
+\{\set e.id,e.ename,e.salary\mid Employee(e) \land \\
+e.city = Indianapolis \land e.salary \geq 30000 \land \\
+e.salary \leq 50000 \}
+\end{array}
+$$
+
+\item{3.2 - Find the id and name of each employee who works in a city located in
+Chicago and who has a manager who lives in Bloomington.}
+$$
+\begin{array}{l}
+\{\set e.id,e.ename\mid Employee(e) \land \\
+\exists \red{c} (Company(\green{c}) \land e.cname = c.cname \land c.city = 'Chicago')\\
+\exists \red{m}\exists \red{e1} (manages(\green{m}) \land employee(\green{e1}) \land m.eid = e.id \\
+\land m.mid = e1.id \land e1.city = 'Bloomington') \}
+\end{array}
+$$
+
+\item{3.3 - Find the id and name of each employee who lives in the same city as at
+least one of his or her managers.}
+$$
+\begin{array}{l}
+\{\set e.id,e.ename\mid Employee(e) \land \\
+\exists \red{m}\exists \red{e1} (manages(\green{m}) \land employee(\green{e1}) \land m.mid = e1.id \land \\
+m.eid = e.id \land e1.city = e.city) \}
+\end{array}
+$$
+
+\item{3.4 - Find the id and name of each employee who has at least 3 job skills.}
+$$
+\begin{array}{l}
+\{\set e.id,e.ename\mid Employee(e) \land \\
+\exists \red{j1}\exists \red{j2}\exists \red{j3} (jobskill(\green{j1}) \land jobskill(\green{j2}) \land jobskill(\green{j3}) \land \\
+e.id = j1.id \land e.id = j2.id \land e.id = j3.id \land \\
+j1.skill \neq j2.skill \land j1.skill \neq j3.skill \land j3.skill \neq j2.skill) \}
+\end{array}
+$$
+
+\item{3.5 - Find the id, name, and salary of each manager who manages an employee who manages at least one other employee who has a programming job skill.}
+$$
+\begin{array}{l}
+\{\set e.cname,e.id,e.salary\mid Employee(e) \land \\
+\exists \red{m1}\exists \red{m3}\exists \red{j} (manages(\green{m1}) \land manages(\green{m2}) \land jobskill(\green{j}) \land \\
+e.id = m1.mid \land m1.eid = m2.mid \land m2.eid = j.id \land \\
+j.skill = 'Programming' ) \}
+\end{array}
+$$
+
+\item{3.6 - For the pairs (id1, id2) of different employees who have a common man-
+ager.}
+$$
+\begin{array}{l}
+\{\set m1.eid, m2.eid\mid Manages(m1) \land Manages(m2) \land \\
+m1.mid = m2.mid \land m1.eid \neq m2.eid \land \}
+\end{array}
+$$
+
+\item{3.7 - Find the cname of each company that does not have employees who live
+in Bloomington.}
+$$
+\begin{array}{l}
+\{\set c.cname\mid company(c) \land \neg (\exists \red{e}(employee(\green{e}) \land \\
+e.cname = c.cname \land e.city = 'Bloomington')) \}
+\end{array}
+$$
+	
+\item{3.8 - For each company, list its name along with the ids of its employees who
+have the highest salary.}
+$$
+\begin{array}{l}
+\{\set e.cname,e.id\mid Employee(e) \land \neg (\exists \red{e1} (employee(\green{e1}) \land \\
+e.cname = e1.cname \land e1.salary > e.salary)) \}
+\end{array}
+$$	
+
+\item{3.9 - Find the id and name of each employee who does not have a manager with
+a salary higher than that of the employee.}
+$$
+\begin{array}{l}
+\{\set e.id,e.ename\mid Employee(e) \land \\
+\neg (\exists \red{m}\exists \red{e2} (manages(\green{m}) \land employee(\green{e2}) \land \\
+m.eid = e.id \land m.mid = e2.id \land e2.salary > e.salary)) \}
+\end{array}
+$$
+
+\item{3.10 - Find the id and name of each manager who has none of the skills of the
+employees that he or she manages.}
+$$
+\begin{array}{l}
+\{\set e.id,e.ename\mid employee(e) \land manages(m) \land e.id = m.mid \land \\
+\neg (\exists \red{e1}\exists \red{j1}\exists \red{j2} (employee(\green{e1}) \land jobskill(\green{j1}) \land jobskill(\green{j2}) \land \\
+m.eid = e1.id \land e1.id = j2.id \land e.id = j1.id \land j1.skill = j2.skill)) \}
+\end{array}
+$$
+
+\end{document}

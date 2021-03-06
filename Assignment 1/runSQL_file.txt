@@ -1,0 +1,8 @@
+\i \path\TO\file_name.sql
+
+\i 'D:/MS DS/Semester 3/Advanced Database Concepts/Asssignments/Assignment 1/assignment1.sql'
+
+
+\i 'C:/Users/ojaash/Desktop/assignment1.sql'
+
+

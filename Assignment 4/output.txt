@@ -1,0 +1,207 @@
+CREATE DATABASE
+DROP TABLE
+CREATE TABLE
+INSERT 0 30
+DROP TABLE
+CREATE TABLE
+INSERT 0 100
+DROP TABLE
+CREATE TABLE
+INSERT 0 25
+DROP TABLE
+CREATE TABLE
+INSERT 0 30
+DROP TABLE
+CREATE TABLE
+INSERT 0 5
+DROP TABLE
+CREATE TABLE
+INSERT 0 60
+Question 1
+                
+ pid | name  
+-----+-------
+  12 | Deepa
+  17 | Lisa
+  18 | Ryan
+  24 | Aya
+(4 rows)
+
+Question 2
+                
+    skill    
+-------------
+ Mathematics
+ Networks
+(2 rows)
+
+Question 3
+                
+   cname   
+-----------
+ Apple
+ Google
+ Hulu
+ IBM
+ Intel
+ Microsoft
+ Netflix
+(7 rows)
+
+Question 4
+                
+ pid | name 
+-----+------
+   8 | Jean
+  16 | Anna
+  18 | Ryan
+  21 | Eric
+  25 | Arif
+  30 | Aya
+(6 rows)
+
+Question 5
+                
+ pid | name 
+-----+------
+   1 | Nick
+(1 row)
+
+Question 6
+                
+ pid |   name   
+-----+----------
+   1 | Nick
+   2 | Deepa
+   4 | Ryan
+   5 | Hasan
+   6 | Arif
+   7 | Ryan
+   8 | Jean
+   9 | Aya
+  10 | Lisa
+  11 | Arif
+  14 | Ryan
+  15 | Nick
+  16 | Anna
+  17 | Lisa
+  18 | Ryan
+  20 | Danielle
+  22 | Anna
+  23 | Chris
+  25 | Arif
+  26 | Anna
+  27 | Latha
+  29 | Linda
+  30 | Aya
+(23 rows)
+
+Question 7
+                
+ pid | name 
+-----+------
+   4 | Ryan
+  11 | Arif
+  26 | Anna
+  30 | Aya
+(4 rows)
+
+Question 8
+                
+ cname  
+--------
+ Amazon
+ Hulu
+ Yahoo
+ Zoom
+(4 rows)
+
+Question 9
+                
+    skill    |    skill    
+-------------+-------------
+ AI          | AI
+ Databases   | Databases
+ Mathematics | Mathematics
+ Networks    | Networks
+ Programming | Programming
+(5 rows)
+
+Question 10
+                
+ count 
+-------
+  1228
+(1 row)
+
+Question 11
+                
+   cname   |   cname   
+-----------+-----------
+ Amazon    | Amazon
+ Amazon    | Apple
+ Amazon    | Google
+ Amazon    | Hulu
+ Amazon    | IBM
+ Amazon    | Intel
+ Amazon    | Microsoft
+ Amazon    | Netflix
+ Amazon    | Yahoo
+ Amazon    | Zoom
+ Apple     | Apple
+ Apple     | Google
+ Apple     | IBM
+ Apple     | Intel
+ Apple     | Microsoft
+ Apple     | Netflix
+ Google    | Google
+ Google    | IBM
+ Google    | Intel
+ Google    | Microsoft
+ Hulu      | Apple
+ Hulu      | Google
+ Hulu      | Hulu
+ Hulu      | IBM
+ Hulu      | Intel
+ Hulu      | Microsoft
+ Hulu      | Netflix
+ Hulu      | Yahoo
+ IBM       | Google
+ IBM       | IBM
+ IBM       | Intel
+ IBM       | Microsoft
+ Intel     | Google
+ Intel     | IBM
+ Intel     | Intel
+ Intel     | Microsoft
+ Microsoft | Google
+ Microsoft | IBM
+ Microsoft | Intel
+ Microsoft | Microsoft
+ Netflix   | Apple
+ Netflix   | Google
+ Netflix   | IBM
+ Netflix   | Intel
+ Netflix   | Microsoft
+ Netflix   | Netflix
+ Yahoo     | Apple
+ Yahoo     | Google
+ Yahoo     | Hulu
+ Yahoo     | IBM
+ Yahoo     | Intel
+ Yahoo     | Microsoft
+ Yahoo     | Netflix
+ Yahoo     | Yahoo
+ Zoom      | Amazon
+ Zoom      | Apple
+ Zoom      | Google
+ Zoom      | Hulu
+ Zoom      | IBM
+ Zoom      | Intel
+ Zoom      | Microsoft
+ Zoom      | Netflix
+ Zoom      | Yahoo
+ Zoom      | Zoom
+(64 rows)
+
+DROP DATABASE
